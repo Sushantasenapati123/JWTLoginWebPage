@@ -1,0 +1,117 @@
+
+@{
+ViewData["Title"] = "ViewUSP_Customer";
+}
+<div class="row">
+		@Html.AntiForgeryToken()
+			@*Write code here*@
+</div><div>
+    <ul class="nav nav-tabs nav-fill" role="tablist">
+        <a class="nav-item nav-link " asp-controller="ModOne" asp-action="USP_Customer">Add</a>
+        <a class="nav-item nav-link active" asp-controller="ModOne" asp-action=ViewUSP_Customer>View</a>
+    </ul>
+</div>
+<br />
+<br />
+<br />
+<div>
+
+		 <br/>
+ <table class="table" id="tbl">
+			<thead>
+				<tr>
+					<th>
+						CustomerName
+					</th>
+					 <th>
+						CustomerEmail
+					</th>
+					 <th>
+						CustomerMobile
+					</th>
+					 <th>
+						CustomerDocument
+					</th>
+					 
+			<th> Action </th>
+				</tr>
+			</thead>
+			<tbody>
+
+
+			</tbody>
+		</table>
+	</div>
+
+	
+	<script>
+$(document).ready(function(){
+	Get_USP_Customer();
+	});
+	function Get_USP_Customer() {
+		$.ajax ({
+		 type:'Get',
+		 dataType: 'Json',
+		 contentType: 'application/json; charset=utf-8',
+		 data: { },
+			url: "@Url.Action("Get_USP_Customer","ModOne")",
+			success: function (result) {
+				var data1 = JSON.parse(result);
+				if (data1.length > 0) {
+				$('#tbl.tbody').empty();
+					$.each(data1, function (i, data) {
+					var trows ="<tr>";
+					trows = trows +"<td>"+ data.CustomerName +"</td>";
+					trows = trows +"<td>"+ data.CustomerEmail +"</td>";
+					trows = trows +"<td>"+ data.CustomerMobile +"</td>";
+					trows = trows +"<td>"+ data.CustomerDocument +"</td>";
+					trows=trows + "<td>" + "<a class='btn-primary' href='/ModOne/USP_Customer?strid="+ data.CustID +"'>Edit</a>&nbsp;<button class='btn-danger' onclick='Delete_USP_Customer("+ data.CustID +")'>Delete</button>" + "</td>";
+					trows = trows + "</tr>";
+					$('#tbl').append(trows);
+					});
+				}
+			},
+		error: function (Message) {
+		alert(Message);
+			}
+		});
+		}
+	
+     function Delete_USP_Customer(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                  $.ajax({
+                    type: "Delete",
+                    dataType: "json",
+                    url: "@Url.Action("Delete_USP_Customer","ModOne")",
+			
+                    data: { "Id": id },
+                      success: function (response) {
+                          Swal.fire(
+                              'Deleted!',
+                              'Data Deleted Successfully!',
+                              'success'
+                        ).then((result) => {
+                            if (result.isConfirmed) {
+                                location.href = "/ModOne/ViewUSP_Customer";
+                            }
+                            else if (result.isDenied) {
+                                Swal.fire('Changes are not saved', '', 'info')
+                            }
+                        })
+                    }
+                });
+
+            }
+            return false;
+        })
+    }	
+</script>

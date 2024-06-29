@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfNamespaceModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <NamespaceModel>
+    <namespacename>Repo.Repository.Repository</namespacename>
+    <name>ModOne</name>
+  </NamespaceModel>
+  <NamespaceModel>
+    <namespacename>Repo.Repository.Repository</namespacename>
+    <name>ModTwo</name>
+  </NamespaceModel>
+</ArrayOfNamespaceModel>

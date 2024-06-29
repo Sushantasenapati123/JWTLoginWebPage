@@ -1,0 +1,16 @@
+[
+  {
+    "PageName": "USP_Customer",
+    "ModuleName": "ModOne",
+    "StoreProcedureName": "USP_Customer",
+    "Actions": "I/V",
+    "PageType": "USP_Customer/ViewUSP_Customer"
+  },
+  {
+    "PageName": "USP_DIST_NoUpdate",
+    "ModuleName": "ModTwo",
+    "StoreProcedureName": "USP_DIST_NoUpdate",
+    "Actions": "I/V",
+    "PageType": "USP_DIST_NoUpdate/ViewUSP_DIST_NoUpdate"
+  }
+]

@@ -1,0 +1,172 @@
+
+@{
+ViewData["Title"] = "USP_Customer";
+}
+<div class="row">
+		@Html.AntiForgeryToken()
+			@*Write code here*@
+</div><div>
+    <ul class="nav nav-tabs nav-fill" role="tablist">
+        <a class="nav-item nav-link active" asp-controller="ModOne" asp-action="USP_Customer">Add</a>
+        <a class="nav-item nav-link" asp-controller="ModOne" asp-action=ViewUSP_Customer>View</a>
+    </ul>
+</div>
+<br />
+<br />
+<br />
+<form id="form">
+
+	<div class="form-group row">
+			<label class="col-12 col-md-2 col-xl-2 mb-3 control-label" for="demo-text-input">p_customername<span class="m-2">:</span></label>
+			<div class="col-12 col-md-6 col-xl-8 mb-3">
+				<input type="text" id="P_CustomerName" name="P_CustomerName" class="form-control">
+			</div>
+	</div>
+	<div class="form-group row">
+			<label class="col-12 col-md-2 col-xl-2 mb-3 control-label" for="demo-text-input">p_customeremail<span class="m-2">:</span></label>
+			<div class="col-12 col-md-6 col-xl-8 mb-3">
+				<input type="text" id="P_CustomerEmail" name="P_CustomerEmail" class="form-control">
+			</div>
+	</div>
+	<div class="form-group row">
+			<label class="col-12 col-md-2 col-xl-2 mb-3 control-label" for="demo-text-input">p_customermobile<span class="m-2">:</span></label>
+			<div class="col-12 col-md-6 col-xl-8 mb-3">
+				<input type="text" id="P_CustomerMobile" name="P_CustomerMobile" class="form-control">
+			</div>
+	</div>
+	<div class="form-group row">
+			<label class="col-12 col-md-2 col-xl-2 mb-3 control-label" for="demo-text-input">p_customerdocument<span class="m-2">:</span></label>
+			<div class="col-12 col-md-6 col-xl-8 mb-3">
+				<input type="text" id="P_CustomerDocument" name="P_CustomerDocument" class="form-control">
+			</div>
+	</div>
+	<div class="form-group">
+		<label class="col-12 col-md-2 col-xl-2 control-label" for="demo-text-input"></label>
+<br/>
+		<div class="col-12 col-md-8 col-xl-12">
+			<input type="button" value="Submit" id="btn_Submit" class="btn btn-primary" onclick="Save_USP_Customer()"/>
+		</div>
+	</div>
+<input id="hdnUSP_Customer" type="hidden" value="0" />
+</form>
+	
+	<script>
+$(document).ready(function () {
+        function getUrlVars() {
+            var vars = {};
+            var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+                vars[key] = decodeURIComponent(value);
+            });
+            return vars;
+        }
+        var id = getUrlVars()["strid"];
+
+        if (id != undefined || id != null) {
+            Edit_USP_Customer(id);
+         }
+    });
+function Edit_USP_Customer(id) {
+        $.ajax({
+            type: "Get",
+            dataType: "json",
+            url: '@Url.Action("E_USP_Customer", "ModOne")',
+            data: { "Id": id },
+            success: function (Result) {
+                var data1 = JSON.parse(Result);
+   $("#hdnUSP_Customer").val(data1.CustID);
+             $('#P_CustomerName').val(data1.CustomerName);
+					$('#P_CustomerEmail').val(data1.CustomerEmail);
+					$('#P_CustomerMobile').val(data1.CustomerMobile);
+					$('#P_CustomerDocument').val(data1.CustomerDocument);
+					
+            },
+            error: function (Message) {
+                alert(Message);
+            }
+        });
+    }        $("#form").validate({
+            rules: {
+                P_CustomerName: {
+                    required: true
+                },
+                P_CustomerEmail: {
+                    required: true
+                },
+                P_CustomerMobile: {
+                    required: true
+                },
+                P_CustomerDocument: {
+                    required: true
+                },
+                            },
+            messages: {
+                P_CustomerName: {
+                    required: "Please enter P_CustomerName"
+                 },
+                P_CustomerEmail: {
+                    required: "Please enter P_CustomerEmail"
+                 },
+                P_CustomerMobile: {
+                    required: "Please enter P_CustomerMobile"
+                 },
+                P_CustomerDocument: {
+                    required: "Please enter P_CustomerDocument"
+                 },
+                
+           },
+            	
+            highlight: function (element) {	
+                $(element).removeClass("is-valid")		
+                $(element).parent().addClass('error')		
+                $(element).addClass("is-invalid")	
+            },	
+            unhighlight: function (element) {	
+                $(element).parent().removeClass('error')	
+                $(element).removeClass("is-invalid");	
+                $(element).addClass("is-valid")	
+            }	
+        });
+			function Save_USP_Customer() {
+			if ($("#form").valid()) {
+					
+					var USP_Customer ={ 
+			
+					 P_CustID:$('#hdnUSP_Customer').val(),
+P_CustomerName:$("#P_CustomerName").val(),
+					P_CustomerEmail:$("#P_CustomerEmail").val(),
+					P_CustomerMobile:$("#P_CustomerMobile").val(),
+					P_CustomerDocument:$("#P_CustomerDocument").val(),
+					
+				};
+			$.ajax({
+				type: "POST",
+				url: "/ModOne/USP_Customer",
+			beforeSend: function (xhr) {
+					xhr.setRequestHeader("XSRF-TOKEN",
+						$('input:hidden[name="__RequestVerificationToken"]').val());
+				},
+			data:USP_Customer,
+			content: 'application/json;charset=utf-8',
+			dataType: "json",
+			success: function (result) {
+						Swal.fire({
+							icon: 'success',
+							title: result.responseText,
+							text: result.responseMessage,
+						}).then((result) => {
+							if (result.isConfirmed) {
+								location.href ="/ModOne/ViewUSP_Customer";
+							}
+						})
+			},
+			error: function (result) {
+						Swal.fire({
+							icon: 'error',
+							title: result.responseText,
+							text: result.responseMessage,
+						});
+					}, 
+			});
+			}
+		}
+	</script>

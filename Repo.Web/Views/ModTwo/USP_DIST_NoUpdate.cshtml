@@ -1,0 +1,144 @@
+
+@{
+ViewData["Title"] = "USP_DIST_NoUpdate";
+}
+<div class="row">
+		@Html.AntiForgeryToken()
+			@*Write code here*@
+</div><div>
+    <ul class="nav nav-tabs nav-fill" role="tablist">
+        <a class="nav-item nav-link active" asp-controller="ModTwo" asp-action="USP_DIST_NoUpdate">Add</a>
+        <a class="nav-item nav-link" asp-controller="ModTwo" asp-action=ViewUSP_DIST_NoUpdate>View</a>
+    </ul>
+</div>
+<br />
+<br />
+<br />
+<form id="form">
+
+	<div class="form-group row">
+			<label class="col-12 col-md-2 col-xl-2 mb-3 control-label" for="demo-text-input">p_statename<span class="m-2">:</span></label>
+			<div class="col-12 col-md-6 col-xl-8 mb-3">
+				<input type="text" id="P_StateName" name="P_StateName" class="form-control">
+			</div>
+	</div>
+	<div class="form-group row">
+			<label class="col-12 col-md-2 col-xl-2 mb-3 control-label" for="demo-text-input">p_distname<span class="m-2">:</span></label>
+			<div class="col-12 col-md-6 col-xl-8 mb-3">
+				<input type="text" id="P_DistName" name="P_DistName" class="form-control">
+			</div>
+	</div>
+	<div class="form-group">
+		<label class="col-12 col-md-2 col-xl-2 control-label" for="demo-text-input"></label>
+<br/>
+		<div class="col-12 col-md-8 col-xl-12">
+			<input type="button" value="Submit" id="btn_Submit" class="btn btn-primary" onclick="Save_USP_DIST_NoUpdate()"/>
+		</div>
+	</div>
+<input id="hdnUSP_DIST_NoUpdate" type="hidden" value="0" />
+</form>
+	
+	<script>
+$(document).ready(function () {
+        function getUrlVars() {
+            var vars = {};
+            var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+                vars[key] = decodeURIComponent(value);
+            });
+            return vars;
+        }
+        var id = getUrlVars()["strid"];
+
+        if (id != undefined || id != null) {
+            Edit_USP_DIST_NoUpdate(id);
+         }
+    });
+function Edit_USP_DIST_NoUpdate(id) {
+        $.ajax({
+            type: "Get",
+            dataType: "json",
+            url: '@Url.Action("E_USP_DIST_NoUpdate", "ModTwo")',
+            data: { "Id": id },
+            success: function (Result) {
+                var data1 = JSON.parse(Result);
+   $("#hdnUSP_DIST_NoUpdate").val(data1.DistId);
+             $('#P_StateName').val(data1.StateName);
+					$('#P_DistName').val(data1.DistName);
+					
+            },
+            error: function (Message) {
+                alert(Message);
+            }
+        });
+    }        $("#form").validate({
+            rules: {
+                P_StateName: {
+                    required: true
+                },
+                P_DistName: {
+                    required: true
+                },
+                            },
+            messages: {
+                P_StateName: {
+                    required: "Please enter P_StateName"
+                 },
+                P_DistName: {
+                    required: "Please enter P_DistName"
+                 },
+                
+           },
+            	
+            highlight: function (element) {	
+                $(element).removeClass("is-valid")		
+                $(element).parent().addClass('error')		
+                $(element).addClass("is-invalid")	
+            },	
+            unhighlight: function (element) {	
+                $(element).parent().removeClass('error')	
+                $(element).removeClass("is-invalid");	
+                $(element).addClass("is-valid")	
+            }	
+        });
+			function Save_USP_DIST_NoUpdate() {
+			if ($("#form").valid()) {
+					
+					var USP_DIST_NoUpdate ={ 
+			
+					 P_DistId:$('#hdnUSP_DIST_NoUpdate').val(),
+P_StateName:$("#P_StateName").val(),
+					P_DistName:$("#P_DistName").val(),
+					
+				};
+			$.ajax({
+				type: "POST",
+				url: "/ModTwo/USP_DIST_NoUpdate",
+			beforeSend: function (xhr) {
+					xhr.setRequestHeader("XSRF-TOKEN",
+						$('input:hidden[name="__RequestVerificationToken"]').val());
+				},
+			data:USP_DIST_NoUpdate,
+			content: 'application/json;charset=utf-8',
+			dataType: "json",
+			success: function (result) {
+						Swal.fire({
+							icon: 'success',
+							title: result.responseText,
+							text: result.responseMessage,
+						}).then((result) => {
+							if (result.isConfirmed) {
+								location.href ="/ModTwo/ViewUSP_DIST_NoUpdate";
+							}
+						})
+			},
+			error: function (result) {
+						Swal.fire({
+							icon: 'error',
+							title: result.responseText,
+							text: result.responseMessage,
+						});
+					}, 
+			});
+			}
+		}
+	</script>
